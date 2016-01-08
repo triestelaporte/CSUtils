@@ -13,7 +13,7 @@ ________/\\\\\\\\\_____/\\\\\\\\\\\____/\\\________/\\\______________________/\\
 */
 
 public with sharing class CSUtils {
-
+	private static Boolean isSandbox;
 	private static Map<String, Schema.SObjectType> sObjectTypeMap = Schema.getGlobalDescribe();
 	private static Map<String, Map<String, Schema.RecordTypeInfo>> sObjectTypeToRecordTypesMap = new Map<String,  Map<String, Schema.RecordTypeInfo>>();
 
@@ -395,4 +395,10 @@ public with sharing class CSUtils {
 		return dt.format('EEEE'); 
 	}
 
+	public static Boolean isSandbox() {
+		if (isSandbox == null) {
+			isSandbox = [SELECT Id, IsSandbox FROM Organization LIMIT 1].IsSandbox;
+		}
+		return isSandbox;
+	}
 }

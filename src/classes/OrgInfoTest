@@ -1,0 +1,104 @@
+@isTest
+public with sharing class OrgInfoTest {
+    @isTest
+    static void getMyDomain() {
+		
+		User u = UserTest.createStandardUser();
+		
+		System.runAs(u) {
+			Test.startTest();
+			
+			OrgInfo.getMyDomain();
+			
+			Test.stopTest();
+		}
+    }
+    
+    @isTest
+    static void getOrgType() {
+		
+		User u = UserTest.createStandardUser();
+		
+		System.runAs(u) {
+			Test.startTest();
+			
+			OrgInfo.OrganizationType ot = OrgInfo.getOrgType();
+			
+			Test.stopTest();
+			
+			System.assertNotEquals(null, ot);
+		}
+    }
+    
+    @isTest
+    static void getPodName() {
+		
+		User u = UserTest.createStandardUser();
+		
+		System.runAs(u) {
+			Test.startTest();
+			
+			String podName = OrgInfo.getPodName();
+			
+			Test.stopTest();
+			
+			System.assertNotEquals(null, podName);
+		}
+    }
+    
+    @isTest
+    static void getTrialExpiration() {
+		
+		User u = UserTest.createStandardUser();
+		
+		System.runAs(u) {
+			Test.startTest();
+			
+			OrgInfo.getTrialExpiration();
+			
+			Test.stopTest();
+		}
+    }
+    
+    @isTest
+    static void isSandbox() {
+		
+		User u = UserTest.createStandardUser();
+		
+		System.runAs(u) {
+			Test.startTest();
+			
+			OrgInfo.isSandbox();
+			
+			Test.stopTest();
+		}
+    }
+    
+    @isTest
+    static void isTrial() {
+		
+		User u = UserTest.createStandardUser();
+		
+		System.runAs(u) {
+			Test.startTest();
+			
+			OrgInfo.isTrial();
+			
+			Test.stopTest();
+		}
+    }
+    
+    @isTest
+    static void isTrialExpired() {
+		
+		User u = UserTest.createStandardUser();
+		
+		System.runAs(u) {
+			Test.startTest();
+			
+			OrgInfo.isTrialExpired();
+			
+			Test.stopTest();
+		}
+    }
+}

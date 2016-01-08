@@ -1,0 +1,58 @@
+public with sharing class OrgInfo {
+    private static Organization org			{ get { if (org == null) {org = [SELECT Id, InstanceName, IsSandbox, OrganizationType, TrialExpirationDate FROM Organization LIMIT 1];} return org;} }
+	
+	
+	public static String getMyDomain() {
+		String md	= Url.getSalesforceBaseUrl().getHost();
+		md			= md.substringBefore('.');
+		md			= md.replace('--c','');
+		
+		return md;
+	}
+	
+	public static OrganizationType getOrgType() {
+		String orgType = org.OrganizationType.replaceAll('[\\. ]', '_');
+		System.debug(orgType);
+		
+		for (OrganizationType ot : OrganizationType.values()) {
+			if (orgType.equalsIgnoreCase(ot.name())) {
+				return ot;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static String getPodName() {
+		return org.InstanceName;
+	}
+	
+	public static DateTime getTrialExpiration() {
+		return org.TrialExpirationDate;
+	}
+	
+	public static Boolean isSandbox() {
+		return org.IsSandbox;
+	}
+	
+	public static Boolean isTrial() {
+		return getTrialExpiration() != null;
+	}
+	
+	public static Boolean isTrialExpired() {
+		return getTrialExpiration() < DateTime.now();
+	}
+	
+	
+	public Enum OrganizationType {
+		CONTACT_MANAGER_EDITION,
+		GROUP_EDITION,
+		DEVELOPER_EDITION,
+		PERSONAL_EDITION,
+		PROFESSIONAL_EDITION,
+		ENTERPRISE_EDITION,
+		UNLIMITED_EDITION,
+		PERFORMANCE_EDITION,
+		DATABASECOM_EDITION
+	}
+}

@@ -395,4 +395,45 @@ public with sharing class CSUtils {
 		return dt.format('EEEE'); 
 	}
 
+
+    /**
+	 * Returns an object with a list of field names 
+	 * and a preformatted soql select statement
+	 */
+    public static ObjectInfo selectStar(String objectName) {
+        SObjectType objToken = Schema.getGlobalDescribe().get(objectName);
+        DescribeSObjectResult objDef = objToken.getDescribe();
+        Map<String, SObjectField> fields = objDef.fields.getMap(); 
+        Set<String> fieldSet = fields.keySet();
+        List<String> fieldsToQuery = new List<String>{};
+
+        for (String fieldName:fieldSet) {
+           SObjectField fieldToken = fields.get(fieldName);
+           DescribeFieldResult selectedField = fieldToken.getDescribe();
+
+           //respect CRUD/FLS
+            if (selectedField.isAccessible()) {
+                fieldsToQuery.add(selectedField.getName());
+            } else {
+                System.debug('not accessible: ' + selectedField.getName());
+            }
+        }
+
+        String queryString = 'SELECT ';
+        queryString += String.join(fieldsToQuery, ', ');
+        queryString += ' FROM ' + objectName + ' ';
+
+        return new ObjectInfo(queryString, fieldsToQuery);
+    }
+
+	public class ObjectInfo {
+        public String query {get;set;}
+        public List<String> fieldNames {get;set;}
+        public ObjectInfo() {}
+        public ObjectInfo(String query, List<String>fieldNames) {
+            this.query = query;
+            this.fieldNames = fieldNames;
+        }
+    }
+
 }

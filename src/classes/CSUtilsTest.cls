@@ -261,4 +261,9 @@ private class CSUtilsTest {
 		system.assertEquals('Sunday', CSUtils.dayOfWeek(date.parse('3/29/2015')) );
 	}
 
+	static testMethod void testSelectStar() {
+		String soql = CSUtils.selectStar('Opportunity', true);
+		system.assertEquals('SELECT AccountId, Amount, CampaignId, CloseDate, CreatedById, CreatedDate, Description, ExpectedRevenue, Fiscal, FiscalQuarter, FiscalYear, ForecastCategory, ForecastCategoryName, HasOpportunityLineItem, Id, IsClosed, IsDeleted, IsPrivate, IsWon, LastActivityDate, LastModifiedById, LastModifiedDate, LeadSource, Name, NextStep, OwnerId, Pricebook2Id, Probability, StageName, SystemModstamp, TotalOpportunityQuantity, Type FROM Opportunity ', soql);
+	}
+
 }

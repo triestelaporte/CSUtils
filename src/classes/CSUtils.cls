@@ -397,23 +397,32 @@ public with sharing class CSUtils {
 
 
     /**
-	 * Returns an object with a list of field names 
-	 * and a preformatted soql select statement
+	 * Returns a preformatted soql select statement
+	 * with all viewable fields in alphabetical order
 	 */
-    public static ObjectInfo selectStar(String objectName) {
+    public static String selectStar(String objectName, Boolean standardOnly) {
         SObjectType objToken = Schema.getGlobalDescribe().get(objectName);
         DescribeSObjectResult objDef = objToken.getDescribe();
         Map<String, SObjectField> fields = objDef.fields.getMap(); 
         Set<String> fieldSet = fields.keySet();
+        List<String> fieldList = new List<String>{};
+        fieldList.addAll(fields.keySet());
+        fieldList.sort();
         List<String> fieldsToQuery = new List<String>{};
 
-        for (String fieldName:fieldSet) {
+        for (String fieldName:fieldList) {
            SObjectField fieldToken = fields.get(fieldName);
            DescribeFieldResult selectedField = fieldToken.getDescribe();
 
            //respect CRUD/FLS
             if (selectedField.isAccessible()) {
-                fieldsToQuery.add(selectedField.getName());
+            	if(standardOnly && !fieldName.endsWith('__c')){
+            		//only add standard fields
+                	fieldsToQuery.add(selectedField.getName());
+                }else if(!standardOnly){
+                	//add standard and custom fields
+                	fieldsToQuery.add(selectedField.getName());
+                }
             } else {
                 System.debug('not accessible: ' + selectedField.getName());
             }
@@ -423,17 +432,7 @@ public with sharing class CSUtils {
         queryString += String.join(fieldsToQuery, ', ');
         queryString += ' FROM ' + objectName + ' ';
 
-        return new ObjectInfo(queryString, fieldsToQuery);
-    }
-
-	public class ObjectInfo {
-        public String query {get;set;}
-        public List<String> fieldNames {get;set;}
-        public ObjectInfo() {}
-        public ObjectInfo(String query, List<String>fieldNames) {
-            this.query = query;
-            this.fieldNames = fieldNames;
-        }
+        return queryString;
     }
 
 }

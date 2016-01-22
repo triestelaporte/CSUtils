@@ -261,4 +261,9 @@ private class CSUtilsTest {
 		system.assertEquals('Sunday', CSUtils.dayOfWeek(date.parse('3/29/2015')) );
 	}
 
+	static testMethod void testSelectStar() {
+		String soql = CSUtils.selectStar('Opportunity', true);
+		system.assertNotEquals(null, soql);
+	}
+
 }
